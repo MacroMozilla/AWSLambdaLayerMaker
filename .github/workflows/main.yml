@@ -3,33 +3,33 @@ name: AWS Package Build
 on:
   push:
     branches:
-      - master  # 或者你想触发的分支
+      - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ 拉取代码
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # 2️⃣ 设置 Python 环境
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'  # 根据你的项目修改
+          python-version: '3.11'
 
-      # 3️⃣ 安装依赖
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt -t package/
+          pip install --upgrade --no-cache-dir -r requirements.txt -t package/
 
-      # 4️⃣ 打包 ZIP
+      - name: Copy source files
+        run: |
+          cp -r *.py package/ || true  # 复制所有根目录的 py 文件
+          # 如果你的源码在 src/ 目录：
+          # cp -r src/* package/
+
       - name: Create zip package
         run: |
           cd package
           zip -r ../aws_package.zip .
-          cd ..
-          zip -g aws_package.zip *.py  # 如果有主脚本等
