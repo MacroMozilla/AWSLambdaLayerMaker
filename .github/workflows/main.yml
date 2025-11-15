@@ -28,23 +28,10 @@ jobs:
           mkdir -p python
           pip install --no-cache-dir -r requirements.txt -t python/
           echo "✅ Dependencies installed into ./python/"
-
-      # 4️⃣ 打包成单一 ZIP（顶层就是 python/）
-      - name: Create ZIP package
-        run: |
-          echo "📦 Creating aws_package.zip (top-level: python/)"
-          zip -r aws_package.zip python
-          echo "✅ Created aws_package.zip"
-
-      # 5️⃣ 验证 ZIP 内容
-      - name: Verify ZIP structure
-        run: |
-          echo "🔍 Verifying ZIP structure..."
-          unzip -l aws_package.zip | head -20
-
+      
       # 6️⃣ 上传 artifact（仅一层 ZIP）
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: aws_package
-          path: aws_package.zip
+          path: python/
