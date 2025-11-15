@@ -1,9 +1,9 @@
-name: AWS Package Build
+name: AWS Lambda Layer Build
 
 on:
   push:
     branches:
-      - master  # 或者改成 main，根据你的仓库分支
+      - master  # 或改成 main
 
 jobs:
   build:
@@ -20,34 +20,29 @@ jobs:
         with:
           python-version: '3.11'
 
-      # 3️⃣ 安装依赖到 package/ 文件夹
-      - name: Install dependencies
+      # 3️⃣ 安装依赖到 python/ 文件夹（Layer 格式）
+      - name: Install dependencies into python/
         run: |
+          echo "📦 Installing dependencies into python/ ..."
           python -m pip install --upgrade pip
-          pip install --no-cache-dir -r requirements.txt -t package/
+          mkdir -p python
+          pip install --no-cache-dir -r requirements.txt -t python/
+          echo "✅ Dependencies installed in ./python/"
 
-      # 4️⃣ 复制源码文件进 package/
-      - name: Copy source code
+      # 4️⃣ 打包成单一 ZIP（顶层是 python/）
+      - name: Create Lambda layer zip
         run: |
-          cp *.py package/ || true
-          # 如果你的源码在 src/ 目录：
-          # cp -r src/* package/
+          echo "📦 Creating aws_package.zip (top-level: python/)"
+          zip -r aws_package.zip python/
+          echo "✅ aws_package.zip created successfully!"
 
-      # 5️⃣ 打包成 zip（AWS Lambda 可直接部署）
-      - name: Create deployment package
-        run: |
-          cd package
-          zip -r ../aws_package.zip .
+      # 5️⃣ 验证 ZIP 内容（确认有 python/）
+      - name: Verify ZIP structure
+        run: unzip -l aws_package.zip | head -20
 
-      # 6️⃣ 验证 ZIP 内容
-      - name: Verify package structure
-        run: |
-          echo "🔍 Checking ZIP contents..."
-          unzip -l aws_package.zip | head -40
-
-      # 7️⃣ 上传构建结果供下载
+      # 6️⃣ 上传 artifact（供下载或部署）
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: aws_package
+          name: aws_layer
           path: aws_package.zip
