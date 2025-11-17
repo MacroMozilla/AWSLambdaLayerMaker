@@ -6,7 +6,7 @@ This project automatically packages your Python dependencies into a ZIP file tha
 
 1. You list your Python dependencies in `requirements.txt`.
 2. The build process installs the dependencies and zips them into a `layer.zip` file.
-3. The artifact (`layer.zip`) is available in the build output — ready to upload to AWS Lambda as a layer.
+3. The artifact (`aws_package.zip`) is available in the build output — ready to upload to AWS Lambda as a layer.
 
 ## 🧩 Usage
 
