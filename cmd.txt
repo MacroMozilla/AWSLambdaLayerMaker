@@ -1,1 +1,9 @@
+# cmd.txt
+echo "Cleaning up unnecessary files..."
+rm -rf nltk/test nltk/ccg nltk/corpus
 
+echo "Downloading nltk punkt tokenizer..."
+python -m nltk.downloader punkt
+
+echo "Verifying nltk installation..."
+python -c "import nltk; print('nltk version:', nltk.__version__)"
