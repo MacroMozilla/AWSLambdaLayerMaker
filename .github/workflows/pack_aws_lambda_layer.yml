@@ -57,6 +57,18 @@ jobs:
           pip install --no-cache-dir -r requirements.txt -t python/
           echo "✅ Dependencies installed into ./python/"
       
+      # 4️⃣ 执行 cmd.txt 中的命令（逐行执行，作用范围在 python/）
+      - name: Run custom commands from cmd.txt
+        run: |
+          echo "⚙️ Running commands from cmd.txt inside python/ ..."
+          pushd python > /dev/null
+          while IFS= read -r line || [ -n "$line" ]; do
+            echo "➡️ Executing: $line"
+            bash -c "$line"
+          done < ../cmd.txt
+          popd > /dev/null
+          echo "✅ Finished running commands from cmd.txt"
+          
       # 6️⃣ 上传 artifact（仅一层 ZIP）
       - name: Upload artifact
         uses: actions/upload-artifact@v4
