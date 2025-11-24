@@ -1,6 +1,6 @@
 # cmd.txt
 echo "Cleaning up unnecessary files..."
-rm -rf nltk/test nltk/ccg
+rm -rf nltk/test
 
 echo "Downloading nltk punkt tokenizer..."
 python -m nltk.downloader punkt
